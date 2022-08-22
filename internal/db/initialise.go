@@ -48,8 +48,9 @@ func (s *Scopes) Scan(src interface{}) (err error) {
 }
 
 const (
-	ADMIN_SCOPE = "admin"
-	USER_SCOPE  = "user"
+	SYS_ADMIN_SCOPE = "sysadmin"
+	ADMIN_SCOPE     = "admin"
+	USER_SCOPE      = "user"
 )
 
 func Initialise(dbPath string) {

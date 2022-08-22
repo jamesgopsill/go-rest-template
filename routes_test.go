@@ -88,7 +88,9 @@ func TestRegister(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/user/register", bytes.NewBufferString(mockRequest))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
-	log.Info().Msg(w.Body.String())
+	if w.Code != http.StatusOK {
+		log.Info().Msg(w.Body.String())
+	}
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
@@ -103,7 +105,9 @@ func TestRegisterAccountExists(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/user/register", bytes.NewBufferString(mockRequest))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
-	log.Info().Msg(w.Body.String())
+	if w.Code != http.StatusUnprocessableEntity {
+		log.Info().Msg(w.Body.String())
+	}
 	assert.Equal(t, http.StatusUnprocessableEntity, w.Code)
 }
 
@@ -115,7 +119,9 @@ func TestLogin(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/user/login", bytes.NewBufferString(mockRequest))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
-	log.Info().Msg(w.Body.String())
+	if w.Code != http.StatusOK {
+		log.Info().Msg(w.Body.String())
+	}
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
@@ -125,7 +131,9 @@ func TestAuthMiddlewareInvalidToken(t *testing.T) {
 	req.Header.Set("Authorization", "Bearer "+invalidSignedString)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
-	log.Info().Msg(w.Body.String())
+	if w.Code != http.StatusBadRequest {
+		log.Info().Msg(w.Body.String())
+	}
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
@@ -134,7 +142,7 @@ type loginResponse struct {
 	Data  string
 }
 
-func TestAuthMiddlewareValidToken(t *testing.T) {
+func TestUpdateUser(t *testing.T) {
 	var mockRequest string
 	mockRequest = `{
 		"password": "test",
@@ -143,7 +151,9 @@ func TestAuthMiddlewareValidToken(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/user/login", bytes.NewBufferString(mockRequest))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
-	log.Info().Msg(w.Body.String())
+	if w.Code != http.StatusOK {
+		log.Info().Msg(w.Body.String())
+	}
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	var response loginResponse
@@ -152,8 +162,6 @@ func TestAuthMiddlewareValidToken(t *testing.T) {
 		panic("error")
 	}
 	els := strings.Split(response.Data, " ")
-
-	log.Info().Msg(els[1])
 
 	token, _ := jwt.ParseWithClaims(els[1], &user.MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SECRET), nil
@@ -168,11 +176,41 @@ func TestAuthMiddlewareValidToken(t *testing.T) {
 		"name": "updated name",
 		"email": "test@test.com"
 	}`
-	log.Info().Msg(mockRequest)
 	req, _ = http.NewRequest("POST", "/user/update", bytes.NewBufferString(mockRequest))
 	req.Header.Set("Authorization", response.Data)
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
-	log.Info().Msg(w.Body.String())
+	if w.Code != http.StatusOK {
+		log.Info().Msg(w.Body.String())
+	}
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestRefreshToken(t *testing.T) {
+	mockRequest := `{
+		"password": "test",
+		"email": "test@test.com"
+	}`
+	req, _ := http.NewRequest("POST", "/user/login", bytes.NewBufferString(mockRequest))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		log.Info().Msg(w.Body.String())
+	}
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	var response loginResponse
+	err := json.NewDecoder(w.Body).Decode(&response)
+	if err != nil {
+		panic("error")
+	}
+
+	req, _ = http.NewRequest("POST", "/user/refresh-token", bytes.NewBufferString(mockRequest))
+	req.Header.Set("Authorization", response.Data)
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		log.Info().Msg(w.Body.String())
+	}
 	assert.Equal(t, http.StatusOK, w.Code)
 }

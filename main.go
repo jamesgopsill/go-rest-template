@@ -22,6 +22,7 @@ func main() {
 
 func initialiseApp(dbPath string, mode string) *gin.Engine {
 	db.Initialise(dbPath)
+	user.Initialise()
 
 	gin.SetMode(mode)
 
@@ -38,7 +39,9 @@ func initialiseApp(dbPath string, mode string) *gin.Engine {
 	r.GET("/ping", pong)
 	r.POST("/user/register", user.Register)
 	r.POST("/user/login", user.Login)
-	r.POST("/user/update", middleware.AuthenticateMiddleware(db.USER_SCOPE), user.Update)
+	r.POST("/user/update", middleware.Authenticate(db.USER_SCOPE), user.Update)
+	r.POST("/user/refresh-token", middleware.Authenticate(db.USER_SCOPE), user.RefreshToken)
+	r.POST("/user/update-password", middleware.Authenticate(db.USER_SCOPE), user.UpdatePassword)
 
 	return r
 }

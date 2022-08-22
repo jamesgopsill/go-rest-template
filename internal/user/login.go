@@ -3,7 +3,6 @@ package user
 import (
 	"jamesgopsill/go-rest-template/internal/db"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -64,25 +63,6 @@ func Login(c *gin.Context) {
 	); err != nil {
 		c.JSON(http.StatusNoContent, gin.H{
 			"error": "Wrong password",
-			"data":  nil,
-		})
-		return
-	}
-
-	secret := os.Getenv("GO_REST_JWT_SECRET")
-	if secret == "" {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Oops, something has gone wrong",
-			"data":  nil,
-		})
-		return
-	}
-	mySigningKey := []byte(secret)
-
-	issuer := os.Getenv("GO_REST_JWT_ISSUER")
-	if issuer == "" {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Oops, something has gone wrong",
 			"data":  nil,
 		})
 		return

@@ -16,7 +16,7 @@ type headers struct {
 	Authorization string `header:"Authorization"`
 }
 
-func AuthenticateMiddleware(scope string) gin.HandlerFunc {
+func Authenticate(scope string) gin.HandlerFunc {
 
 	secret := os.Getenv("GO_REST_JWT_SECRET")
 	if secret == "" {

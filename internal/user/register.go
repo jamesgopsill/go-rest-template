@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -59,7 +58,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	log.Info().Msg("user does not exist")
+	// log.Info().Msg("user does not exist")
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.MinCost)
 	if err != nil {
