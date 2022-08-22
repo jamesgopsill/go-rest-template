@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -57,6 +59,8 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	log.Info().Msg("user does not exist")
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.MinCost)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -66,10 +70,15 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	var scopes []string
+	scopes = append(scopes, db.USER_SCOPE)
+
 	db.Connection.Create(&db.User{
+		ID:           uuid.New().String(),
 		Name:         body.Name,
 		Email:        body.Email,
-		PasswordHash: hash,
+		PasswordHash: string(hash),
+		Scopes:       scopes,
 	})
 
 	c.JSON(http.StatusOK, gin.H{

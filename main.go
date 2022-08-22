@@ -14,20 +14,16 @@ import (
 )
 
 func main() {
-
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-
-	log.Info().Msg("Hello World")
-
-	r := initialiseApp()
-
+	log.Info().Msg("Starting App")
+	r := initialiseApp("tmp/test.db", gin.ReleaseMode)
 	r.Run("localhost:3000")
 }
 
-func initialiseApp() *gin.Engine {
-	db.Initialise("tmp/test.db")
+func initialiseApp(dbPath string, mode string) *gin.Engine {
+	db.Initialise(dbPath)
 
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(mode)
 
 	r := gin.New()
 	r.Use(gin.Logger())
@@ -40,9 +36,9 @@ func initialiseApp() *gin.Engine {
 	r.Use(cors.New(config))
 
 	r.GET("/ping", pong)
-	r.GET("/user/register", user.Register)
-	r.GET("/user/update", middleware.AuthenticateMiddleware("test"), user.Update)
-	r.GET("/user/login", middleware.AuthenticateMiddleware(""), user.Login)
+	r.POST("/user/register", user.Register)
+	r.POST("/user/login", user.Login)
+	r.POST("/user/update", middleware.AuthenticateMiddleware(db.USER_SCOPE), user.Update)
 
 	return r
 }

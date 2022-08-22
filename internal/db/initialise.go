@@ -1,6 +1,11 @@
 package db
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
+	"strings"
+
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -8,12 +13,44 @@ import (
 
 var Connection *gorm.DB
 
-type User struct {
+type Base struct {
 	gorm.Model
+	ID string
+}
+
+type User struct {
+	ID           string
 	Name         string
 	Email        string
-	PasswordHash []byte
+	Scopes       Scopes
+	PasswordHash string
 }
+
+// https://stackoverflow.com/questions/41375563/unsupported-scan-storing-driver-value-type-uint8-into-type-string
+
+type Scopes []string
+
+func (s Scopes) Value() (driver.Value, error) {
+	if len(s) == 0 {
+		return "[]", nil
+	}
+	return fmt.Sprintf(`["%s"]`, strings.Join(s, `","`)), nil
+}
+
+func (s *Scopes) Scan(src interface{}) (err error) {
+	var scopes []string
+	err = json.Unmarshal([]byte(src.(string)), &scopes)
+	if err != nil {
+		return
+	}
+	*s = scopes
+	return nil
+}
+
+const (
+	ADMIN_SCOPE = "admin"
+	USER_SCOPE  = "user"
+)
 
 func Initialise(dbPath string) {
 	var err error
