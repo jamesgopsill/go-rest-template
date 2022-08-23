@@ -78,6 +78,7 @@ func Register(c *gin.Context) {
 		Email:        body.Email,
 		PasswordHash: string(hash),
 		Scopes:       scopes,
+		Thumbnail:    "",
 	})
 
 	c.JSON(http.StatusOK, gin.H{

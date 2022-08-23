@@ -24,6 +24,7 @@ type User struct {
 	Email        string
 	Scopes       Scopes
 	PasswordHash string
+	Thumbnail    string
 }
 
 // https://stackoverflow.com/questions/41375563/unsupported-scan-storing-driver-value-type-uint8-into-type-string

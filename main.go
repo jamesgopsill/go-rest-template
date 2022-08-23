@@ -42,6 +42,8 @@ func initialiseApp(dbPath string, mode string) *gin.Engine {
 	r.POST("/user/update", middleware.Authenticate(db.USER_SCOPE), user.Update)
 	r.POST("/user/refresh-token", middleware.Authenticate(db.USER_SCOPE), user.RefreshToken)
 	r.POST("/user/update-password", middleware.Authenticate(db.USER_SCOPE), user.UpdatePassword)
+	r.POST("/user/upload-thumbnail", middleware.Authenticate(db.USER_SCOPE), user.UploadThumbnail)
+	r.Static("/user/thumbnail", "tmp/thumbnail")
 
 	return r
 }
