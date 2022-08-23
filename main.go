@@ -9,16 +9,27 @@ import (
 	"jamesgopsill/go-rest-template/internal/user"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 func main() {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	log.Info().Msg("Starting App")
 	r := initialiseApp("tmp/test.db", gin.ReleaseMode)
-	r.Run("localhost:3000")
+	if config.HostWhiteList != "" {
+		m := autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: autocert.HostWhitelist(),
+			Cache:      autocert.DirCache("/var/www/.cache"),
+		}
+		autotls.RunWithManager(r, &m)
+	} else {
+		r.Run("localhost:3000")
+	}
 }
 
 func initialiseApp(dbPath string, mode string) *gin.Engine {

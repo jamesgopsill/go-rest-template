@@ -7,6 +7,7 @@ var Secret string
 var MySigningKey []byte
 var Issuer string
 var UserThumbnailDir string
+var HostWhiteList string
 
 func Initalise() {
 
@@ -30,5 +31,7 @@ func Initalise() {
 	if UserThumbnailDir == "" {
 		panic("No User Thumbnail Dir.")
 	}
+
+	HostWhiteList = os.Getenv("GO_REST_HOST_WHITE_LIST")
 
 }
