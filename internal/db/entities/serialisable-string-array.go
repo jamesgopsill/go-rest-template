@@ -1,4 +1,4 @@
-package db
+package entities
 
 import (
 	"database/sql/driver"
@@ -9,16 +9,16 @@ import (
 
 // https://stackoverflow.com/questions/41375563/unsupported-scan-storing-driver-value-type-uint8-into-type-string
 
-type GormStringArray []string
+type SerialisableStringArray []string
 
-func (s GormStringArray) Value() (driver.Value, error) {
+func (s SerialisableStringArray) Value() (driver.Value, error) {
 	if len(s) == 0 {
 		return "[]", nil
 	}
 	return fmt.Sprintf(`["%s"]`, strings.Join(s, `","`)), nil
 }
 
-func (s *GormStringArray) Scan(src interface{}) (err error) {
+func (s *SerialisableStringArray) Scan(src interface{}) (err error) {
 	var array []string
 	err = json.Unmarshal([]byte(src.(string)), &array)
 	if err != nil {

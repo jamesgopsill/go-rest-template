@@ -3,6 +3,7 @@ package user
 import (
 	"jamesgopsill/go-rest-template/internal/config"
 	"jamesgopsill/go-rest-template/internal/db"
+	"jamesgopsill/go-rest-template/internal/db/entities"
 	"net/http"
 	"time"
 
@@ -47,7 +48,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Check if the user exists
-	var user db.User
+	var user entities.User
 	res := db.Connection.First(&user, "email=?", body.Email)
 	if res.Error != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{

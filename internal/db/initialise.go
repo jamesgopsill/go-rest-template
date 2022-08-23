@@ -2,6 +2,7 @@ package db
 
 import (
 	"jamesgopsill/go-rest-template/internal/config"
+	"jamesgopsill/go-rest-template/internal/db/entities"
 
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/sqlite"
@@ -18,5 +19,5 @@ func Initialise() {
 		panic("failed to connect database")
 	}
 	log.Info().Msg("Connected to database")
-	Connection.AutoMigrate(&User{})
+	Connection.AutoMigrate(&entities.User{})
 }

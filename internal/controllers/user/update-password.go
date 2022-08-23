@@ -2,6 +2,7 @@ package user
 
 import (
 	"jamesgopsill/go-rest-template/internal/db"
+	"jamesgopsill/go-rest-template/internal/db/entities"
 	"jamesgopsill/go-rest-template/internal/utils"
 	"net/http"
 
@@ -46,7 +47,7 @@ func UpdatePassword(c *gin.Context) {
 		return
 	}
 
-	var user db.User
+	var user entities.User
 	res := db.Connection.First(&user, "id=?", body.ID)
 	if res.Error != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{

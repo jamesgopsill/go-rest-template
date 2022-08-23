@@ -2,6 +2,7 @@ package user
 
 import (
 	"jamesgopsill/go-rest-template/internal/db"
+	"jamesgopsill/go-rest-template/internal/db/entities"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -48,7 +49,7 @@ func Register(c *gin.Context) {
 	}
 
 	// Check if the user already exists
-	var user db.User
+	var user entities.User
 	res := db.Connection.First(&user, "email=?", body.Email)
 	if res.Error == nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -72,7 +73,7 @@ func Register(c *gin.Context) {
 	var scopes []string
 	scopes = append(scopes, db.USER_SCOPE)
 
-	db.Connection.Create(&db.User{
+	db.Connection.Create(&entities.User{
 		ID:           uuid.New().String(),
 		Name:         body.Name,
 		Email:        body.Email,

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"jamesgopsill/go-rest-template/internal/user"
+	"jamesgopsill/go-rest-template/internal/controllers/user"
 	"net/http"
 	"os"
 	"strings"

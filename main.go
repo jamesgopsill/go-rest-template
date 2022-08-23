@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"jamesgopsill/go-rest-template/internal/config"
+	"jamesgopsill/go-rest-template/internal/controllers/user"
 	"jamesgopsill/go-rest-template/internal/db"
 	"jamesgopsill/go-rest-template/internal/middleware"
-	"jamesgopsill/go-rest-template/internal/user"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/autotls"

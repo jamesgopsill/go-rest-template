@@ -2,6 +2,7 @@ package user
 
 import (
 	"jamesgopsill/go-rest-template/internal/db"
+	"jamesgopsill/go-rest-template/internal/db/entities"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,7 +43,7 @@ func Update(c *gin.Context) {
 		})
 	}
 
-	var user db.User
+	var user entities.User
 	res := db.Connection.First(&user, "id=?", claims.ID)
 	if res.Error != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
