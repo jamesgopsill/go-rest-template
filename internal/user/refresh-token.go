@@ -1,6 +1,7 @@
 package user
 
 import (
+	"jamesgopsill/go-rest-template/internal/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +19,7 @@ func RefreshToken(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString(mySigningKey)
+	ss, err := token.SignedString(config.MySigningKey)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Oops, something has gone wrong",

@@ -24,7 +24,9 @@ var invalidSignedString string
 const SECRET = "test"
 
 func init() {
-	dbPath := "tmp/test.db"
+	dbPath := "data/test.db"
+	issuer := "www.test.com"
+	UserThumbnailDir := "data/user-thumbnails"
 	if _, err := os.Stat(dbPath); err == nil {
 		err := os.Remove(dbPath)
 		if err != nil {
@@ -32,8 +34,10 @@ func init() {
 		}
 	}
 	os.Setenv("GO_REST_JWT_SECRET", SECRET)
-	os.Setenv("GO_REST_JWT_ISSUER", "www.test.com")
-	os.RemoveAll("tmp/thumbnail")
+	os.Setenv("GO_REST_DB_PATH", dbPath)
+	os.Setenv("GO_REST_JWT_ISSUER", issuer)
+	os.Setenv("GO_REST_USER_THUMBNAIL_DIR", UserThumbnailDir)
+	os.RemoveAll(UserThumbnailDir)
 
 	var invalidScopes []string
 	invalidClaims := user.MyCustomClaims{

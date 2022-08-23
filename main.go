@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"jamesgopsill/go-rest-template/internal/config"
 	"jamesgopsill/go-rest-template/internal/db"
 	"jamesgopsill/go-rest-template/internal/middleware"
 	"jamesgopsill/go-rest-template/internal/user"
@@ -21,8 +22,8 @@ func main() {
 }
 
 func initialiseApp(dbPath string, mode string) *gin.Engine {
-	db.Initialise(dbPath)
-	user.Initialise()
+	config.Initalise()
+	db.Initialise()
 
 	gin.SetMode(mode)
 
@@ -30,11 +31,11 @@ func initialiseApp(dbPath string, mode string) *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"}
-	config.AllowHeaders = []string{"Authorization", "Content-Type"}
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"*"}
+	corsConfig.AllowHeaders = []string{"Authorization", "Content-Type"}
 
-	r.Use(cors.New(config))
+	r.Use(cors.New(corsConfig))
 
 	r.GET("/ping", pong)
 	r.POST("/user/register", user.Register)
@@ -43,7 +44,7 @@ func initialiseApp(dbPath string, mode string) *gin.Engine {
 	r.POST("/user/refresh-token", middleware.Authenticate(db.USER_SCOPE), user.RefreshToken)
 	r.POST("/user/update-password", middleware.Authenticate(db.USER_SCOPE), user.UpdatePassword)
 	r.POST("/user/upload-thumbnail", middleware.Authenticate(db.USER_SCOPE), user.UploadThumbnail)
-	r.Static("/user/thumbnail", "tmp/thumbnail")
+	r.Static("/user/thumbnail", config.UserThumbnailDir)
 
 	return r
 }

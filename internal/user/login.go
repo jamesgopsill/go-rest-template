@@ -1,6 +1,7 @@
 package user
 
 import (
+	"jamesgopsill/go-rest-template/internal/config"
 	"jamesgopsill/go-rest-template/internal/db"
 	"net/http"
 	"time"
@@ -76,12 +77,12 @@ func Login(c *gin.Context) {
 		Scopes: user.Scopes,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Unix() + 60*60*24,
-			Issuer:    issuer,
+			Issuer:    config.Issuer,
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString(mySigningKey)
+	ss, err := token.SignedString(config.MySigningKey)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Oops, something has gone wrong",

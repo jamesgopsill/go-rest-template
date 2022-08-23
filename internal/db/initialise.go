@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"jamesgopsill/go-rest-template/internal/config"
 	"strings"
 
 	"github.com/rs/zerolog/log"
@@ -54,10 +55,10 @@ const (
 	USER_SCOPE      = "user"
 )
 
-func Initialise(dbPath string) {
+func Initialise() {
 	var err error
 	log.Info().Msg("Connecting to database")
-	Connection, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	Connection, err = gorm.Open(sqlite.Open(config.DBPath), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}

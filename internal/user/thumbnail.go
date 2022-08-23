@@ -2,6 +2,7 @@ package user
 
 import (
 	"io"
+	"jamesgopsill/go-rest-template/internal/config"
 	"jamesgopsill/go-rest-template/internal/db"
 	"net/http"
 	"os"
@@ -42,12 +43,11 @@ func UploadThumbnail(c *gin.Context) {
 	}
 
 	els := strings.Split(header.Filename, ".")
-	thumbnailDir := "tmp/thumbnail"
-	filepath := thumbnailDir + "/" + claims.ID + "." + els[len(els)-1]
+	filepath := config.UserThumbnailDir + "/" + claims.ID + "." + els[len(els)-1]
 
-	if _, err := os.Stat(thumbnailDir); os.IsNotExist(err) {
+	if _, err := os.Stat(config.UserThumbnailDir); os.IsNotExist(err) {
 		// create the dir
-		if err := os.Mkdir(thumbnailDir, os.ModePerm); err != nil {
+		if err := os.Mkdir(config.UserThumbnailDir, os.ModePerm); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
 				"data":  nil,
