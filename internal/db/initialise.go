@@ -4,8 +4,8 @@ import (
 	"jamesgopsill/go-rest-template/internal/config"
 	"jamesgopsill/go-rest-template/internal/db/entities"
 
+	"github.com/glebarez/sqlite"
 	"github.com/rs/zerolog/log"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
